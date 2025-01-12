@@ -6,7 +6,8 @@ CPU::CPU(Memory& mem) :
     m_mem(mem),
     m_status(0),
     m_pc(0),
-    m_regA(0)
+    m_regA(0),
+    m_regX(0)
 {
 
 }
@@ -58,7 +59,7 @@ void CPU::lda()
     m_regA = eat();
 
     setStatusBit(ZERO_FLAG, m_regA == 0);
-    setStatusBit(NEGATIVE_FLAG, m_regA < 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
 }
 
 void CPU::brk()

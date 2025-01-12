@@ -1,44 +1,13 @@
 // cpu.cpp
+#pragma once
 
-#include <cstdint>
-#include <vector>
-
-using b1 = uint8_t;
-using b2 = uint16_t;
-
-
-
-enum opcode : b1
-{
-    LDA = 0xA9,
-    BRK = 0x00,
-    TAX = 0xAA,
-
-};
-
-class Memory
-{
-public:
-    b1 read(b2 loc);
-    void write(b2 loc, b1 val);
-
-
-private:
-
-    enum memOffset : b2
-    {
-        ROM_STRART = 0x8000,
-        ROM_END = 0xFFFF,
-
-    };
-
-    std::vector<b1> m_data;
-};
+#include "byte.h"
+#include "memory.h"
 
 class CPU
 {
 private:
-    enum statusBit
+    enum statusBit : uint8_t
     {
         CARRY_FLAG = 1 << 0,
         ZERO_FLAG = 1 << 1,
@@ -47,6 +16,13 @@ private:
         BREAK_COMMND = 1 << 4,
         OVERFLOW_FLAG = 1 << 5,
         NEGATIVE_FLAG = 1 << 6
+    };
+
+    enum opcode : b1
+    {
+        LDA = 0xA9,
+        BRK = 0x00,
+        TAX = 0xAA,
     };
 
 public:
@@ -63,13 +39,12 @@ private:
     void brk();
     void tax();
 
+    Memory& m_mem;
     b1 m_status;
+    b2 m_pc;
     b1 m_regA;
     b1 m_regX;
-    b2 m_pc;
-
 
     void setStatusBit(statusBit bit, bool set);
 
-    Memory& m_mem;
 };
