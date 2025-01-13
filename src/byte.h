@@ -14,3 +14,11 @@ inline bool negBitSet(b1 b)
 {
     return nBit & b;
 }
+
+inline b2 toLittleEndian(b2 b)
+{
+    b2 lo = b & 0xFF;
+    b2 hi = b & 0xFF00;
+
+    return (lo << 8) | (hi  >> 8);
+}

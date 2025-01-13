@@ -1,24 +1,25 @@
 // memory.h
 #pragma once
 
-#include "byte.h"
+#include <array>
 #include <vector>
+
+#include "byte.h"
 
 class Memory
 {
 public:
-    b1 read(b2 loc);
-    void write(b2 loc, b1 val);
-
-
-private:
-
-    enum memOffset : b2
+    enum : b2
     {
-        ROM_STRART = 0x8000,
+        ROM_START = 0x8000,
         ROM_END = 0xFFFF,
+        PROG_START = 0xFFFC,
     };
 
-    std::vector<b1> m_data;
-};
+    b1 read(b2 loc);
+    void write(b2 loc, b1 val);
+    void load(const std::vector<b1>& prog);
 
+private:
+    std::array<b1, 0xFFFF> m_data;
+};

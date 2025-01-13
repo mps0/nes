@@ -3,15 +3,18 @@
 #include "cpu.h"
 
 CPU::CPU(Memory& mem) :
-    m_mem(mem),
-    m_status(0),
-    m_pc(0),
-    m_regA(0),
-    m_regX(0)
+    m_mem(mem)
 {
-
+    reset();
 }
 
+void CPU::reset()
+{
+    m_status = 0;
+    m_regA = 0;
+    m_regX = 0;
+    m_pc = Memory::PROG_START;
+}
 void CPU::run()
 {
     while(1)
@@ -64,7 +67,7 @@ void CPU::lda()
 
 void CPU::brk()
 {
-    m_pc = 0xFFFE;
+    m_pc = toLittleEndian(0xFFFE);
 
     setStatusBit(BREAK_COMMND, true);
 }
