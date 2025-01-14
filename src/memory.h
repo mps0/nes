@@ -16,8 +16,10 @@ public:
         PROG_START = 0xFFFC,
     };
 
-    b1 read(b2 loc);
-    void write(b2 loc, b1 val);
+    b1 read1(b2 loc);
+    void write1(b2 loc, b1 val);
+    b2 read2(b2 loc);
+    void write2(b2 loc, b2 val);
     void load(const std::vector<b1>& prog);
 
 private:

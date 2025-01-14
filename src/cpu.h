@@ -1,9 +1,6 @@
 // cpu.cpp
 #pragma once
 
-#include <functional>
-#include <set>
-
 #include "byte.h"
 #include "memory.h"
 
@@ -18,6 +15,7 @@ public:
         ABSOLUTE,
         ABSOLUTE_X,
         ABSOLUTE_Y,
+        INDIRECT,
         INDIRECT_X,
         INDIRECT_Y,
     };
@@ -52,28 +50,24 @@ public:
     b1 X();
     b2 PC();
 
-    void setA(b1 val);
-    void setX(b1 val);
-    void setPC(b2 val);
-    void incrPC(b2 val);
-    void declPC(b2 val);
-    void setStatusBit(statusBit bit, bool set);
 
 private:
     b1 get();
     b1 eat();
+    b2 getAddr(addressMode mode);
     void evaluate();
+
+    void setStatusBit(statusBit bit, bool set);
 
     void lda();
     void brk();
     void tax();
+
 
     Memory& m_mem;
     b1 m_status;
     b2 m_pc;
     b1 m_regA;
     b1 m_regX;
-
-
+    b1 m_regY;
 };
-
