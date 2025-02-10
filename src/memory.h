@@ -22,6 +22,8 @@ public:
     void write2(b2 loc, b2 val);
     void load(const std::vector<b1>& prog);
 
+    void printProgramMemory(b2 numBytes);
+
 private:
     std::array<b1, 0xFFFF> m_data;
 };

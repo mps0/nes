@@ -1,9 +1,8 @@
 // cpu.cpp
 
 #include "cpu.h"
-
-//
-std::
+#include <cstdio>
+#include <iostream>
 
 CPU::CPU(Memory& mem) :
     m_mem(mem)
@@ -16,11 +15,15 @@ void CPU::reset()
     m_status = 0;
     m_regA = 0;
     m_regX = 0;
-    m_pc = Memory::PROG_START;
+    //m_pc = Memory::PROG_START; //TODO
+    m_pc = 0;
+    m_run = true;
 }
 void CPU::run()
 {
-    while(1)
+    reset();
+
+    while(m_run)
     {
         evaluate();
     }
@@ -31,12 +34,15 @@ void CPU::evaluate()
     switch(eat())
     {
         case LDA:
+            std::cout << "LDA" << std::endl;
             return lda();
 
         case TAX:
+            std::cout << "TAX" << std::endl;
             return tax();
 
         case BRK:
+            std::cout << "BRK" << std::endl;
         default:
             return brk();
     };
@@ -44,12 +50,18 @@ void CPU::evaluate()
 
 b1 CPU::eat()
 {
-    return m_mem.read(++m_pc);
+
+    printf("m_pc: %d\n", m_pc);
+    b1 k = m_mem.read1(m_pc++);
+    printf("k: %X\n", k);
+    return k;
+
+    //return m_mem.read1(++m_pc);
 }
 
 b1 CPU::get()
 {
-    return m_mem.read(m_pc);
+    return m_mem.read1(m_pc);
 }
 
 void CPU::setStatusBit(statusBit bit, bool set)
@@ -75,6 +87,7 @@ void CPU::brk()
     m_pc = toLittleEndian(0xFFFE);
 
     setStatusBit(BREAK_COMMND, true);
+    m_run = false;
 }
 
 void CPU::tax()

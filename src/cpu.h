@@ -63,6 +63,8 @@ private:
     void brk();
     void tax();
 
+    bool m_run;
+
 
     Memory& m_mem;
     b1 m_status;
