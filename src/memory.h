@@ -11,9 +11,8 @@ class Memory
 public:
     enum : b2
     {
-        ROM_START = 0x8000,
+        PROG_START = 0x8000,
         ROM_END = 0xFFFF,
-        PROG_START = 0xFFFC,
     };
 
     b1 read1(b2 loc);

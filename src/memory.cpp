@@ -40,15 +40,15 @@ void Memory::write2(b2 loc, b2 val)
 
 void Memory::load(const std::vector<b1>& prog)
 {
-    assert(prog.size() <= ROM_END - ROM_START + 1);
-    std::copy_n(prog.begin(), prog.size(), m_data.begin());
+    assert(prog.size() <= ROM_END - PROG_START + 1);
+    std::copy_n(prog.begin(), prog.size(), m_data.begin() + PROG_START);
 }
 
 void Memory::printProgramMemory(b2 numBytes)
 {
     printf("Printing memory!\n");
-    b2 loc = 0; //TODO
-    b2 end = numBytes;
+    b2 loc = PROG_START;
+    b2 end = PROG_START + numBytes;
 
     getchar();
     while(loc < end)
