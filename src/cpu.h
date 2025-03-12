@@ -3,23 +3,11 @@
 
 #include "byte.h"
 #include "memory.h"
+#include "opCode.h"
 
 class CPU
 {
 public:
-    enum addressMode : uint8_t
-    {
-        IMMEDIATE,
-        ZERO_PAGE,
-        ZERO_PAGE_X,
-        ABSOLUTE,
-        ABSOLUTE_X,
-        ABSOLUTE_Y,
-        INDIRECT,
-        INDIRECT_X,
-        INDIRECT_Y,
-    };
-
     enum statusBit : uint8_t
     {
         CARRY_FLAG = 1 << 0,
@@ -33,12 +21,6 @@ public:
 
 public:
 
-    enum opcode : b1
-    {
-        LDA = 0xA9,
-        BRK = 0x00,
-        TAX = 0xAA,
-    };
     CPU(Memory& mem);
 
     void run();
@@ -59,9 +41,11 @@ private:
 
     void setStatusBit(statusBit bit, bool set);
 
-    void lda();
-    void brk();
-    void tax();
+    void brk(const opCode& code);
+    void lda(const opCode& code);
+    void inx(const opCode& code);
+    void tax(const opCode& code);
+    void sta(const opCode& code);
 
     bool m_run;
 

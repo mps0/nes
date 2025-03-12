@@ -12,7 +12,6 @@ int main()
 
     mem.load(prog);
     mem.printProgramMemory(5);
-    getchar();
     cpu.run();
 
     return 0;

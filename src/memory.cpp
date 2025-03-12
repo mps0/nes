@@ -9,7 +9,7 @@ b1 Memory::read1(b2 loc)
 {
     assert(loc < m_data.size());
 
-    printf("reading: %d", loc);
+    //printf("reading: %d", loc);
     return m_data[loc];
 }
 
