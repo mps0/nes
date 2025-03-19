@@ -5,6 +5,12 @@
 
 #include "memory.h"
 
+Memory::Memory()
+{
+    // TODO BRK ADDR
+    write2(0xFFFE, PROG_START);
+}
+
 b1 Memory::read1(b2 loc)
 {
     assert(loc < m_data.size());
@@ -22,7 +28,7 @@ void Memory::write1(b2 loc, b1 val)
 
 b2 Memory::read2(b2 loc)
 {
-    assert(loc + 1 < static_cast<b2>(m_data.size()));
+    assert(loc < m_data.size());
 
     b2 lo = read1(loc);
     b2 hi = read1(loc + 1);
@@ -32,7 +38,8 @@ b2 Memory::read2(b2 loc)
 
 void Memory::write2(b2 loc, b2 val)
 {
-    assert(loc + 1 < static_cast<b2>(m_data.size()));
+    printf("m_data.size: %d, loc: %d", m_data.size(), loc);
+    assert(loc < m_data.size());
 
     write1(loc, val);
     write1(loc + 1, val >> 8);

@@ -12,8 +12,11 @@ public:
     enum : b2
     {
         PROG_START = 0x8000,
+        BRK_ADDR = 0xFFFE,
         ROM_END = 0xFFFF,
     };
+
+    Memory();
 
     b1 read1(b2 loc);
     void write1(b2 loc, b1 val);
@@ -24,5 +27,5 @@ public:
     void printProgramMemory(b2 numBytes);
 
 private:
-    std::array<b1, 0xFFFF> m_data;
+    std::array<b1, 0xFFFF + 1> m_data;
 };

@@ -4,6 +4,16 @@
 
 std::unordered_map<b1, opCode> codeMap =
 {
+    // AND
+    {0x29, {0x29, AND, IMMEDIATE, 2, 2}},
+    {0x25, {0x25, AND, ZERO_PAGE, 2, 3}},
+    {0x35, {0x35, AND, ZERO_PAGE_X, 2, 4}},
+    {0x2D, {0x2D, AND, ABSOLUTE,32, 4}},
+    {0x3D, {0x3D, AND, ABSOLUTE_X, 3, 4}},
+    {0x39, {0x39, AND, ABSOLUTE_Y, 3, 4}},
+    {0x21, {0x21, AND, INDIRECT_X, 2, 6}},
+    {0x31, {0x31, AND, INDIRECT_Y, 2, 5}},
+
     // BRK
     {0x00, {0x00, BRK, IMPLIED, 1, 7}},
 
@@ -40,6 +50,8 @@ std::string instrStr(const instruction instr)
 {
     switch(instr)
     {
+        case AND:
+            return "AND";
         case LDA:
             return "LDA";
         case BRK:

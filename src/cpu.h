@@ -28,10 +28,17 @@ public:
 
     void getInst(b1 val);
 
-    b1 A();
-    b1 X();
-    b2 PC();
+    b1 getA();
+    b1 getX();
+    b1 getY();
+    b1 getStatus();
+    b2 getPC();
 
+    void setA(b1 v);
+    void setX(b1 v);
+    void setY(b1 v);
+    void setStatus(b1 v);
+    void setPC(b2 v);
 
 private:
     b1 get();
@@ -46,6 +53,7 @@ private:
     void inx(const opCode& code);
     void tax(const opCode& code);
     void sta(const opCode& code);
+    void _and(const opCode& code);
 
     bool m_run;
 

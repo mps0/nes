@@ -4,8 +4,9 @@
 
 #include "byte.h"
 
-enum instruction: b1
+enum instruction : b1
 {
+    AND,
     BRK,
     INX,
     LDA,

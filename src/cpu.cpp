@@ -20,8 +20,6 @@ void CPU::reset()
 }
 void CPU::run()
 {
-    reset();
-
     while(m_run)
     {
         evaluate();
@@ -35,6 +33,8 @@ void CPU::evaluate()
 
     switch(code.instr)
     {
+        case AND:
+            return _and(code);
         case LDA:
             return lda(code);
         case TAX:
@@ -66,10 +66,23 @@ void CPU::setStatusBit(statusBit bit, bool set)
         m_status &= ~bit;
 }
 
+void CPU::_and(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 mask = m_mem.read1(loc);
+
+    m_regA &= mask;
+
+    setStatusBit(ZERO_FLAG, m_regA == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
+}
+
 void CPU::lda(const opCode& code)
 {
     b2 loc = getAddr(code.addrMode);
+    printf("lda addr: %X", loc);
     m_regA = m_mem.read1(loc);
+    printf("regA : %X", m_regA);
 
     setStatusBit(ZERO_FLAG, m_regA == 0);
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
@@ -85,9 +98,9 @@ void CPU::inx(const opCode& code)
 
 void CPU::brk(const opCode& code)
 {
-    //TODO wrong
-    m_pc = toLittleEndian(0xFFFE);
+    m_pc = m_mem.read2(Memory::BRK_ADDR);
 
+    printf("m_pc: %X, BRK_ADDR: %X\n", m_pc, Memory::BRK_ADDR);
     setStatusBit(BREAK_COMMND, true);
     m_run = false;
 }
@@ -106,7 +119,7 @@ void CPU::sta(const opCode& code)
 
 b2 CPU::getAddr(addressMode mode)
 {
-    b2 fb = eat();
+    b2 fb = static_cast<b2>(eat());
     switch(mode)
     {
         case IMMEDIATE:
@@ -121,12 +134,73 @@ b2 CPU::getAddr(addressMode mode)
             return (fb << 8) | (eat() + m_regX);
         case ABSOLUTE_Y:
             return (fb << 8) | (eat() + m_regY);
+        //TODO wrong?
         case INDIRECT:
             return (fb << 8) | eat();
         case INDIRECT_X:
-            return (fb << 8) + m_regX;
+            {
+                b1 zpAddr = fb + m_regX;
+                b2 lo = m_mem.read1(zpAddr);
+                b2 hi = m_mem.read1(b1(zpAddr + 1));
+                return (hi << 8) | lo;
+            }
         case INDIRECT_Y:
-            return (fb << 8) + m_regY;
-            break;
+            {
+                b1 zpAddr = fb;
+                b2 lo = m_mem.read1(zpAddr);
+                b2 hi = m_mem.read1(b1(zpAddr + 1));
+                b2 addr = ((hi << 8) | lo);
+                return ((hi << 8) | lo) + m_regY;
+            }
     }
+}
+
+b1 CPU::getA()
+{
+    return m_regA;
+}
+
+b1 CPU::getX()
+{
+    return m_regX;
+}
+
+b1 CPU::getY()
+{
+    return m_regY;
+}
+
+b1 CPU::getStatus()
+{
+    return m_status;
+}
+
+b2 CPU::getPC()
+{
+    return m_pc;
+}
+
+void CPU::setA(b1 v)
+{
+    m_regA = v;
+}
+
+void CPU::setX(b1 v)
+{
+    m_regX = v;
+}
+
+void CPU::setY(b1 v)
+{
+    m_regY = v;
+}
+
+void CPU::setStatus(b1 v)
+{
+    m_status = v;
+}
+
+void CPU::setPC(b2 v)
+{
+    m_pc = v;
 }
