@@ -10,6 +10,9 @@ enum instruction : b1
     BRK,
     INX,
     LDA,
+    STA,
+    STX,
+    STY,
     TAX,
 };
 
@@ -19,6 +22,7 @@ enum addressMode : uint8_t
     IMMEDIATE,
     ZERO_PAGE,
     ZERO_PAGE_X,
+    ZERO_PAGE_Y,
     ABSOLUTE,
     ABSOLUTE_X,
     ABSOLUTE_Y,

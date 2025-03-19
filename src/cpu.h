@@ -48,15 +48,16 @@ private:
 
     void setStatusBit(statusBit bit, bool set);
 
-    void brk(const opCode& code);
-    void lda(const opCode& code);
-    void inx(const opCode& code);
-    void tax(const opCode& code);
-    void sta(const opCode& code);
     void _and(const opCode& code);
+    void brk(const opCode& code);
+    void inx(const opCode& code);
+    void lda(const opCode& code);
+    void sta(const opCode& code);
+    void stx(const opCode& code);
+    void sty(const opCode& code);
+    void tax(const opCode& code);
 
     bool m_run;
-
 
     Memory& m_mem;
     b1 m_status;

@@ -30,8 +30,28 @@ std::unordered_map<b1, opCode> codeMap =
     {0xA1, {0xA1, LDA, INDIRECT_X, 2, 6}},
     {0xB1, {0xB1, LDA, INDIRECT_Y, 2, 5}},
 
+    // STA
+    {0x85, {0x85, STA, ZERO_PAGE, 2, 3}},
+    {0x95, {0x95, STA, ZERO_PAGE_X, 2, 4}},
+    {0x8D, {0x8D, STA, ABSOLUTE, 3, 4}},
+    {0x9D, {0x9D, STA, ABSOLUTE_X, 3, 5}},
+    {0x99, {0x99, STA, ABSOLUTE_Y, 3, 5}},
+    {0x81, {0x81, STA, INDIRECT_X, 2, 6}},
+    {0x91, {0x91, STA, INDIRECT_Y, 2, 6}},
+
+    // STX
+    {0x86, {0x86, STX, ZERO_PAGE, 2, 3}},
+    {0x96, {0x96, STX, ZERO_PAGE_Y, 2, 4}},
+    {0x8E, {0x8E, STX, ABSOLUTE, 3, 4}},
+
+    // STY
+    {0x84, {0x84, STY, ZERO_PAGE, 2, 3}},
+    {0x94, {0x94, STY, ZERO_PAGE_X, 2, 4}},
+    {0x8C, {0x8C, STY, ABSOLUTE, 3, 4}},
+
     // TAX
     {0xAA, {0xAA, TAX, IMPLIED, 1, 2}},
+
 
 };
 
@@ -52,17 +72,21 @@ std::string instrStr(const instruction instr)
     {
         case AND:
             return "AND";
-        case LDA:
-            return "LDA";
         case BRK:
             return "BRK";
-        case TAX:
-            return "TAX";
         case INX:
             return "INX";
+        case LDA:
+            return "LDA";
+        case STA:
+            return "STA";
+        case STX:
+            return "STX";
+        case TAX:
+            return "TAX";
         default:
             return "UNKNOWN_INSTRUCTION";
-        }
+    }
 }
 
 std::string addrStr(const addressMode mode)
@@ -77,6 +101,8 @@ std::string addrStr(const addressMode mode)
             return "ZERO_PAGE";
         case ZERO_PAGE_X:
             return "ZERO_PAGE_X";
+        case ZERO_PAGE_Y:
+            return "ZERO_PAGE_Y";
         case ABSOLUTE:
             return "ABSOLUTE";
         case ABSOLUTE_X:

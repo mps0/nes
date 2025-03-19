@@ -181,4 +181,38 @@ TEST_CASE("OPCodes")
         CHECK(cpu.getPC() == Memory::PROG_START);
         CHECK((cpu.getStatus() & CPU::BREAK_COMMND) > 0);
     }
+
+    SUBCASE("STA")
+    {
+        std::vector<b1> program = {0x8D, 0x01, 0x42};
+
+        cpu.setA(0xFF);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(mem.read1(0x0142) == cpu.getA());
+    }
+
+    SUBCASE("STX")
+    {
+        std::vector<b1> program = {0x96, 0xE2};
+
+        cpu.setX(0xF1);
+        cpu.setY(0x02);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(mem.read1(0xE2 + cpu.getY()) == cpu.getX());
+    }
+
+    SUBCASE("STY")
+    {
+        std::vector<b1> program = {0x8C, 0xE2, 0xFF};
+
+        cpu.setY(0x02);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(mem.read1(0xE2FF) == cpu.getY());
+    }
 }

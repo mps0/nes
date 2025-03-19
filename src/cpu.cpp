@@ -41,8 +41,16 @@ void CPU::evaluate()
             return tax(code);
         case INX:
             return inx(code);
+        case STA:
+            return sta(code);
+        case STX:
+            return stx(code);
+        case STY:
+            return sty(code);
         case BRK:
+            return brk(code);
         default:
+            printf("Couldn't find case for code!");
             return brk(code);
     };
 }
@@ -114,7 +122,20 @@ void CPU::tax(const opCode& code)
 
 void CPU::sta(const opCode& code)
 {
+    b2 loc = getAddr(code.addrMode);
+    m_mem.write1(loc, m_regA);
+}
 
+void CPU::stx(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    m_mem.write1(loc, m_regX);
+}
+
+void CPU::sty(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    m_mem.write1(loc, m_regY);
 }
 
 b2 CPU::getAddr(addressMode mode)
@@ -128,6 +149,8 @@ b2 CPU::getAddr(addressMode mode)
             return fb;
         case ZERO_PAGE_X:
             return fb + m_regX;
+        case ZERO_PAGE_Y:
+            return fb + m_regY;
         case ABSOLUTE:
             return (fb << 8) | eat();
         case ABSOLUTE_X:

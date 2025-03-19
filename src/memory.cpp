@@ -22,6 +22,7 @@ b1 Memory::read1(b2 loc)
 void Memory::write1(b2 loc, b1 val)
 {
     assert(loc < m_data.size());
+    printf("\nwriting val: %X, to loc: %X\n", val, loc);
 
     m_data[loc] = val;
 }
