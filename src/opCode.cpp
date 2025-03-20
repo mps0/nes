@@ -14,6 +14,13 @@ std::unordered_map<b1, opCode> codeMap =
     {0x21, {0x21, AND, INDIRECT_X, 2, 6}},
     {0x31, {0x31, AND, INDIRECT_Y, 2, 5}},
 
+    // ASL
+    {0x0A, {0x0A, ASL, ACCUMULATOR, 1, 2}},
+    {0x06, {0x06, ASL, ZERO_PAGE, 2, 5}},
+    {0x16, {0x16, ASL, ZERO_PAGE_X, 2, 6}},
+    {0x0E, {0x0E, ASL, ABSOLUTE, 3, 6}},
+    {0x1E, {0x1E, ASL, ABSOLUTE_X, 3, 7}},
+
     // BRK
     {0x00, {0x00, BRK, IMPLIED, 1, 7}},
 
@@ -52,7 +59,20 @@ std::unordered_map<b1, opCode> codeMap =
     // TAX
     {0xAA, {0xAA, TAX, IMPLIED, 1, 2}},
 
+    // TAY
+    {0xA8, {0xA8, TAY, IMPLIED, 1, 2}},
 
+    // TSX
+    {0xBA, {0xBA, TSX, IMPLIED, 1, 2}},
+
+    // TXA
+    {0x8A, {0x8A, TXA, IMPLIED, 1, 2}},
+
+    // TXS
+    {0x9A, {0x9A, TXS, IMPLIED, 1, 2}},
+
+    // TYA
+    {0x98, {0x98, TYA, IMPLIED, 1, 2}},
 };
 
 const opCode& lookupCode(b1 b)
@@ -72,6 +92,8 @@ std::string instrStr(const instruction instr)
     {
         case AND:
             return "AND";
+        case ASL:
+            return "ASL";
         case BRK:
             return "BRK";
         case INX:
@@ -82,8 +104,20 @@ std::string instrStr(const instruction instr)
             return "STA";
         case STX:
             return "STX";
+        case STY:
+            return "STY";
         case TAX:
             return "TAX";
+        case TAY:
+            return "TAY";
+        case TSX:
+            return "TSX";
+        case TXA:
+            return "TXA";
+        case TXS:
+            return "TXS";
+        case TYA:
+            return "TYA";
         default:
             return "UNKNOWN_INSTRUCTION";
     }

@@ -12,6 +12,7 @@ CPU::CPU(Memory& mem) :
 
 void CPU::reset()
 {
+    m_sp = Memory::STACK_START;
     m_status = 0;
     m_regA = 0;
     m_regX = 0;
@@ -35,24 +36,80 @@ void CPU::evaluate()
     {
         case AND:
             return _and(code);
-        case LDA:
-            return lda(code);
-        case TAX:
-            return tax(code);
+        case ASL:
+            return asl(code);
+        case BRK:
+            return brk(code);
         case INX:
             return inx(code);
+        case LDA:
+            return lda(code);
         case STA:
             return sta(code);
         case STX:
             return stx(code);
         case STY:
             return sty(code);
-        case BRK:
-            return brk(code);
+        case TAX:
+            return tax(code);
+        case TAY:
+            return tay(code);
+        case TSX:
+            return tsx(code);
+        case TXA:
+            return txa(code);
+        case TXS:
+            return txs(code);
+        case TYA:
+            return tya(code);
         default:
             printf("Couldn't find case for code!");
             return brk(code);
     };
+}
+
+b2 CPU::getAddr(addressMode mode)
+{
+    b2 fb = static_cast<b2>(eat());
+    switch(mode)
+    {
+        case IMMEDIATE:
+            return m_pc - 1;
+        case ZERO_PAGE:
+            return fb;
+        case ZERO_PAGE_X:
+            return fb + m_regX;
+        case ZERO_PAGE_Y:
+            return fb + m_regY;
+        case ABSOLUTE:
+            return (fb << 8) | eat();
+        case ABSOLUTE_X:
+            return (fb << 8) | (eat() + m_regX);
+        case ABSOLUTE_Y:
+            return (fb << 8) | (eat() + m_regY);
+            //TODO wrong?
+        case INDIRECT:
+            return (fb << 8) | eat();
+        case INDIRECT_X:
+            {
+                b1 zpAddr = fb + m_regX;
+                b2 lo = m_mem.read1(zpAddr);
+                b2 hi = m_mem.read1(b1(zpAddr + 1));
+                return (hi << 8) | lo;
+            }
+        case INDIRECT_Y:
+            {
+                b1 zpAddr = fb;
+                b2 lo = m_mem.read1(zpAddr);
+                b2 hi = m_mem.read1(b1(zpAddr + 1));
+                b2 addr = ((hi << 8) | lo);
+                return ((hi << 8) | lo) + m_regY;
+            }
+
+        case ACCUMULATOR:
+        default:
+            return 0x0;
+    }
 }
 
 b1 CPU::eat()
@@ -85,12 +142,35 @@ void CPU::_and(const opCode& code)
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
 }
 
+void CPU::asl(const opCode& code)
+{
+    if(code.addrMode == ACCUMULATOR)
+    {
+        setStatusBit(CARRY_FLAG, m_regA & 0x80);
+        m_regA = m_regA << 1;
+
+        setStatusBit(ZERO_FLAG, m_regA == 0);
+        setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
+    }
+    else
+    {
+        b2 loc = getAddr(code.addrMode);
+        b1 val = m_mem.read1(loc);
+
+        setStatusBit(CARRY_FLAG, val & 0x80);
+
+        val = val << 1;
+        m_mem.write1(loc, val);
+
+        setStatusBit(ZERO_FLAG, val == 0);
+        setStatusBit(NEGATIVE_FLAG, negBitSet(val));
+    }
+}
+
 void CPU::lda(const opCode& code)
 {
     b2 loc = getAddr(code.addrMode);
-    printf("lda addr: %X", loc);
     m_regA = m_mem.read1(loc);
-    printf("regA : %X", m_regA);
 
     setStatusBit(ZERO_FLAG, m_regA == 0);
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
@@ -113,13 +193,6 @@ void CPU::brk(const opCode& code)
     m_run = false;
 }
 
-void CPU::tax(const opCode& code)
-{
-    m_regX = m_regA;
-
-    setStatusBit(ZERO_FLAG, m_regX == 0);
-}
-
 void CPU::sta(const opCode& code)
 {
     b2 loc = getAddr(code.addrMode);
@@ -138,44 +211,52 @@ void CPU::sty(const opCode& code)
     m_mem.write1(loc, m_regY);
 }
 
-b2 CPU::getAddr(addressMode mode)
+void CPU::tax(const opCode& code)
 {
-    b2 fb = static_cast<b2>(eat());
-    switch(mode)
-    {
-        case IMMEDIATE:
-            return m_pc - 1;
-        case ZERO_PAGE:
-            return fb;
-        case ZERO_PAGE_X:
-            return fb + m_regX;
-        case ZERO_PAGE_Y:
-            return fb + m_regY;
-        case ABSOLUTE:
-            return (fb << 8) | eat();
-        case ABSOLUTE_X:
-            return (fb << 8) | (eat() + m_regX);
-        case ABSOLUTE_Y:
-            return (fb << 8) | (eat() + m_regY);
-        //TODO wrong?
-        case INDIRECT:
-            return (fb << 8) | eat();
-        case INDIRECT_X:
-            {
-                b1 zpAddr = fb + m_regX;
-                b2 lo = m_mem.read1(zpAddr);
-                b2 hi = m_mem.read1(b1(zpAddr + 1));
-                return (hi << 8) | lo;
-            }
-        case INDIRECT_Y:
-            {
-                b1 zpAddr = fb;
-                b2 lo = m_mem.read1(zpAddr);
-                b2 hi = m_mem.read1(b1(zpAddr + 1));
-                b2 addr = ((hi << 8) | lo);
-                return ((hi << 8) | lo) + m_regY;
-            }
-    }
+    m_regX = m_regA;
+
+    setStatusBit(ZERO_FLAG, m_regX == 0);
+    setStatusBit(NEGATIVE_FLAG, m_regX < 0);
+}
+
+void CPU::tay(const opCode& code)
+{
+    m_regY = m_regA;
+
+    setStatusBit(ZERO_FLAG, m_regY == 0);
+    setStatusBit(NEGATIVE_FLAG, m_regY < 0);
+}
+
+void CPU::tsx(const opCode& code)
+{
+    m_regX = m_sp;
+
+    setStatusBit(ZERO_FLAG, m_regX == 0);
+    setStatusBit(NEGATIVE_FLAG, m_regX < 0);
+}
+
+void CPU::txa(const opCode& code)
+{
+    m_regA = m_regX;
+
+    setStatusBit(ZERO_FLAG, m_regA == 0);
+    setStatusBit(NEGATIVE_FLAG, m_regA < 0);
+}
+
+void CPU::txs(const opCode& code)
+{
+    m_sp = m_regX;
+
+    setStatusBit(ZERO_FLAG, m_sp == 0);
+    setStatusBit(NEGATIVE_FLAG, m_sp < 0);
+}
+
+void CPU::tya(const opCode& code)
+{
+    m_regA = m_regY;
+
+    setStatusBit(ZERO_FLAG, m_regA == 0);
+    setStatusBit(NEGATIVE_FLAG, m_regA < 0);
 }
 
 b1 CPU::getA()
@@ -191,6 +272,11 @@ b1 CPU::getX()
 b1 CPU::getY()
 {
     return m_regY;
+}
+
+b1 CPU::getSP()
+{
+    return m_sp;
 }
 
 b1 CPU::getStatus()
@@ -216,6 +302,11 @@ void CPU::setX(b1 v)
 void CPU::setY(b1 v)
 {
     m_regY = v;
+}
+
+void CPU::setSP(b1 v)
+{
+    m_sp = v;
 }
 
 void CPU::setStatus(b1 v)

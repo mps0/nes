@@ -7,6 +7,7 @@
 enum instruction : b1
 {
     AND,
+    ASL,
     BRK,
     INX,
     LDA,
@@ -14,21 +15,27 @@ enum instruction : b1
     STX,
     STY,
     TAX,
+    TAY,
+    TSX,
+    TXA,
+    TXS,
+    TYA,
 };
 
 enum addressMode : uint8_t
 {
-    IMPLIED,
-    IMMEDIATE,
-    ZERO_PAGE,
-    ZERO_PAGE_X,
-    ZERO_PAGE_Y,
     ABSOLUTE,
     ABSOLUTE_X,
     ABSOLUTE_Y,
+    ACCUMULATOR,
+    IMMEDIATE,
+    IMPLIED,
     INDIRECT,
     INDIRECT_X,
     INDIRECT_Y,
+    ZERO_PAGE,
+    ZERO_PAGE_X,
+    ZERO_PAGE_Y,
 };
 
 struct opCode

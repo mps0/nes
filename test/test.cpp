@@ -159,6 +159,30 @@ TEST_CASE("OPCodes")
         CHECK(cpu.getA() == (0xB7 & 0x2F));
     }
 
+    SUBCASE("ASL-accumlator")
+    {
+        std::vector<b1> program = {0x0A};
+
+        cpu.setA(0x01);
+
+        mem.load(program);
+        cpu.run();
+
+        CHECK(cpu.getA() == (0x02));
+    }
+
+    SUBCASE("ASL-Absolute")
+    {
+        std::vector<b1> program = {0x0E, 0x0F, 0x11};
+
+        mem.write1(0x0F11, 0x22);
+
+        mem.load(program);
+        cpu.run();
+
+        CHECK(mem.read1(0x0F11) == (0x22 << 1));
+    }
+
     SUBCASE("INX")
     {
         std::vector<b1> program = {0xE8};
@@ -214,5 +238,71 @@ TEST_CASE("OPCodes")
         cpu.run();
 
         CHECK(mem.read1(0xE2FF) == cpu.getY());
+    }
+
+    SUBCASE("TAX")
+    {
+        std::vector<b1> program = {0xAA};
+
+        cpu.setA(0xB2);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(cpu.getX() == cpu.getA());
+    }
+
+    SUBCASE("TAY")
+    {
+        std::vector<b1> program = {0xA8};
+
+        cpu.setA(0xB2);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(cpu.getY() == cpu.getA());
+    }
+
+    SUBCASE("TSX")
+    {
+        std::vector<b1> program = {0xBA};
+
+        cpu.setSP(0x03);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(cpu.getX() == cpu.getSP());
+    }
+
+    SUBCASE("TXA")
+    {
+        std::vector<b1> program = {0x8A};
+
+        cpu.setX(0x03);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(cpu.getA() == cpu.getX());
+    }
+
+    SUBCASE("TXS")
+    {
+        std::vector<b1> program = {0x9A};
+
+        cpu.setX(0x03);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(cpu.getSP() == cpu.getX());
+    }
+
+    SUBCASE("TYA")
+    {
+        std::vector<b1> program = {0x98};
+
+        cpu.setY(0x03);
+        mem.load(program);
+        cpu.run();
+
+        CHECK(cpu.getA() == cpu.getY());
     }
 }

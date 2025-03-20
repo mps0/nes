@@ -31,12 +31,14 @@ public:
     b1 getA();
     b1 getX();
     b1 getY();
+    b1 getSP();
     b1 getStatus();
     b2 getPC();
 
     void setA(b1 v);
     void setX(b1 v);
     void setY(b1 v);
+    void setSP(b1 v);
     void setStatus(b1 v);
     void setPC(b2 v);
 
@@ -49,6 +51,7 @@ private:
     void setStatusBit(statusBit bit, bool set);
 
     void _and(const opCode& code);
+    void asl(const opCode& code);
     void brk(const opCode& code);
     void inx(const opCode& code);
     void lda(const opCode& code);
@@ -56,12 +59,18 @@ private:
     void stx(const opCode& code);
     void sty(const opCode& code);
     void tax(const opCode& code);
+    void tay(const opCode& code);
+    void tsx(const opCode& code);
+    void txa(const opCode& code);
+    void txs(const opCode& code);
+    void tya(const opCode& code);
 
     bool m_run;
 
     Memory& m_mem;
-    b1 m_status;
     b2 m_pc;
+    b1 m_sp;
+    b1 m_status;
     b1 m_regA;
     b1 m_regX;
     b1 m_regY;

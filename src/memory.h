@@ -11,6 +11,8 @@ class Memory
 public:
     enum : b2
     {
+        STACK_START = 0x0100,
+        STACK_END = 0x01FF,
         PROG_START = 0x8000,
         BRK_ADDR = 0xFFFE,
         ROM_END = 0xFFFF,
