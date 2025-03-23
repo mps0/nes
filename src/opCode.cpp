@@ -21,6 +21,9 @@ std::unordered_map<b1, opCode> codeMap =
     {0x0E, {0x0E, ASL, ABSOLUTE, 3, 6}},
     {0x1E, {0x1E, ASL, ABSOLUTE_X, 3, 7}},
 
+    // BCC
+    {0x90, {0x90, BCC, RELATIVE, 2, 2}},
+
     // BRK
     {0x00, {0x00, BRK, IMPLIED, 1, 7}},
 
@@ -94,6 +97,8 @@ std::string instrStr(const instruction instr)
             return "AND";
         case ASL:
             return "ASL";
+        case BCC:
+            return "BCC";
         case BRK:
             return "BRK";
         case INX:
@@ -127,8 +132,12 @@ std::string addrStr(const addressMode mode)
 {
     switch(mode)
     {
+        case ACCUMULATOR:
+            return "ACCUMULATOR";
         case IMPLIED:
             return "IMPLIED";
+        case RELATIVE:
+            return "RELATIVE";
         case IMMEDIATE:
             return "IMMEDIATE";
         case ZERO_PAGE:

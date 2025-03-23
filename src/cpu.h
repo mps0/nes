@@ -24,6 +24,7 @@ public:
     CPU(Memory& mem);
 
     void run();
+    void run(uint32_t numInstr);
     void reset();
 
     void getInst(b1 val);
@@ -52,6 +53,7 @@ private:
 
     void _and(const opCode& code);
     void asl(const opCode& code);
+    void bcc(const opCode& code);
     void brk(const opCode& code);
     void inx(const opCode& code);
     void lda(const opCode& code);

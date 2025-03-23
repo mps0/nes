@@ -15,10 +15,10 @@ TEST_CASE("ADDRESS MODES")
     SUBCASE("IMMEDIATE")
     {
         // LDA
-        std::vector<b1> program = {0xA9, 0xB7, 0x00};
+        std::vector<b1> program = {0xA9, 0xB7};
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xB7);
     }
@@ -26,71 +26,71 @@ TEST_CASE("ADDRESS MODES")
     SUBCASE("ZERO PAGE")
     {
         // LDA
-        std::vector<b1> program = {0xA5, 0x00, 0x00};
+        std::vector<b1> program = {0xA5, 0x00};
 
         mem.write1(0x00, 0xA1);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xA1);
     }
 
     SUBCASE("ZERO PAGE X")
     {
-        std::vector<b1> program = {0xB5, 0x0F, 0x00};
+        std::vector<b1> program = {0xB5, 0x0F};
 
         cpu.setX(0xA1);
 
         mem.write1(0x0F + cpu.getX(), 0xAA);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xAA);
     }
 
     SUBCASE("ABSOLUTE")
     {
-        std::vector<b1> program = {0xAD, 0x0F, 0x12, 0x00};
+        std::vector<b1> program = {0xAD, 0x0F, 0x12};
 
         mem.write1(0x0F12, 0xD6);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xD6);
     }
 
     SUBCASE("ABSOLUTE X")
     {
-        std::vector<b1> program = {0xBD, 0x0F, 0x12, 0x00};
+        std::vector<b1> program = {0xBD, 0x0F, 0x12};
 
         cpu.setX(0xA1);
 
         mem.write1(0x0F12 + cpu.getX(), 0xD6);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xD6);
     }
 
     SUBCASE("ABSOLUTE Y")
     {
-        std::vector<b1> program = {0xB9, 0x0F, 0x12, 0x00};
+        std::vector<b1> program = {0xB9, 0x0F, 0x12};
 
         cpu.setY(0xA1);
         mem.write1(0x0F12 + cpu.getY(), 0x12);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0x12);
     }
 
     SUBCASE("INDIRECT X")
     {
-        std::vector<b1> program = {0xA1, 0x10, 0x00};
+        std::vector<b1> program = {0xA1, 0x10};
 
         // full address
         b2 addr = 0xAF52;
@@ -105,14 +105,14 @@ TEST_CASE("ADDRESS MODES")
         cpu.setX(0x03);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xA2);
     }
 
     SUBCASE("INDIRECT Y")
     {
-        std::vector<b1> program = {0xB1, 0xFF, 0x00};
+        std::vector<b1> program = {0xB1, 0xFF};
 
         cpu.setY(0x2B);
         // full address
@@ -126,7 +126,7 @@ TEST_CASE("ADDRESS MODES")
         mem.write1(zpAddrHi, 0xAF);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xA2);
     }
@@ -142,7 +142,7 @@ TEST_CASE("OPCodes")
         std::vector<b1> program = {0xA9, 0xB7};
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == 0xB7);
     }
@@ -154,7 +154,7 @@ TEST_CASE("OPCodes")
         cpu.setA(0xB7);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == (0xB7 & 0x2F));
     }
@@ -166,7 +166,7 @@ TEST_CASE("OPCodes")
         cpu.setA(0x01);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == (0x02));
     }
@@ -178,7 +178,7 @@ TEST_CASE("OPCodes")
         mem.write1(0x0F11, 0x22);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(mem.read1(0x0F11) == (0x22 << 1));
     }
@@ -190,7 +190,7 @@ TEST_CASE("OPCodes")
         cpu.setX(1);
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getX() == 2);
     }
@@ -200,7 +200,7 @@ TEST_CASE("OPCodes")
         std::vector<b1> program = {0x00};
 
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getPC() == Memory::PROG_START);
         CHECK((cpu.getStatus() & CPU::BREAK_COMMND) > 0);
@@ -212,7 +212,7 @@ TEST_CASE("OPCodes")
 
         cpu.setA(0xFF);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(mem.read1(0x0142) == cpu.getA());
     }
@@ -224,7 +224,7 @@ TEST_CASE("OPCodes")
         cpu.setX(0xF1);
         cpu.setY(0x02);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(mem.read1(0xE2 + cpu.getY()) == cpu.getX());
     }
@@ -235,7 +235,7 @@ TEST_CASE("OPCodes")
 
         cpu.setY(0x02);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(mem.read1(0xE2FF) == cpu.getY());
     }
@@ -246,7 +246,7 @@ TEST_CASE("OPCodes")
 
         cpu.setA(0xB2);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getX() == cpu.getA());
     }
@@ -257,7 +257,7 @@ TEST_CASE("OPCodes")
 
         cpu.setA(0xB2);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getY() == cpu.getA());
     }
@@ -268,7 +268,7 @@ TEST_CASE("OPCodes")
 
         cpu.setSP(0x03);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getX() == cpu.getSP());
     }
@@ -279,7 +279,7 @@ TEST_CASE("OPCodes")
 
         cpu.setX(0x03);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == cpu.getX());
     }
@@ -290,7 +290,7 @@ TEST_CASE("OPCodes")
 
         cpu.setX(0x03);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getSP() == cpu.getX());
     }
@@ -301,8 +301,18 @@ TEST_CASE("OPCodes")
 
         cpu.setY(0x03);
         mem.load(program);
-        cpu.run();
+        cpu.run(1);
 
         CHECK(cpu.getA() == cpu.getY());
+    }
+
+    SUBCASE("BCC")
+    {
+        std::vector<b1> program = {0x90, 0x31};
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
     }
 }

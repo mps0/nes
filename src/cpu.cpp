@@ -12,7 +12,7 @@ CPU::CPU(Memory& mem) :
 
 void CPU::reset()
 {
-    m_sp = Memory::STACK_START;
+    m_sp = 0;
     m_status = 0;
     m_regA = 0;
     m_regX = 0;
@@ -22,6 +22,14 @@ void CPU::reset()
 void CPU::run()
 {
     while(m_run)
+    {
+        evaluate();
+    }
+}
+
+void CPU::run(uint32_t numInstr)
+{
+    for(uint32_t i = 0; i < numInstr; ++i)
     {
         evaluate();
     }
@@ -38,6 +46,8 @@ void CPU::evaluate()
             return _and(code);
         case ASL:
             return asl(code);
+        case BCC:
+            return bcc(code);
         case BRK:
             return brk(code);
         case INX:
@@ -102,9 +112,11 @@ b2 CPU::getAddr(addressMode mode)
                 b1 zpAddr = fb;
                 b2 lo = m_mem.read1(zpAddr);
                 b2 hi = m_mem.read1(b1(zpAddr + 1));
-                b2 addr = ((hi << 8) | lo);
                 return ((hi << 8) | lo) + m_regY;
             }
+
+        case RELATIVE:
+                return fb;
 
         case ACCUMULATOR:
         default:
@@ -130,6 +142,9 @@ void CPU::setStatusBit(statusBit bit, bool set)
     else
         m_status &= ~bit;
 }
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 void CPU::_and(const opCode& code)
 {
@@ -184,11 +199,20 @@ void CPU::inx(const opCode& code)
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regX));
 }
 
+void CPU::bcc(const opCode& code)
+{
+    if(m_status & CARRY_FLAG)
+        return;
+
+    b1 loc = getAddr(code.addrMode);
+    m_pc = negBitSet(loc) ? m_pc - (0x0100 - loc) : m_pc + loc;
+}
+
 void CPU::brk(const opCode& code)
 {
     m_pc = m_mem.read2(Memory::BRK_ADDR);
 
-    printf("m_pc: %X, BRK_ADDR: %X\n", m_pc, Memory::BRK_ADDR);
+    //printf("m_pc: %X, BRK_ADDR: %X\n", m_pc, Memory::BRK_ADDR);
     setStatusBit(BREAK_COMMND, true);
     m_run = false;
 }
@@ -216,7 +240,7 @@ void CPU::tax(const opCode& code)
     m_regX = m_regA;
 
     setStatusBit(ZERO_FLAG, m_regX == 0);
-    setStatusBit(NEGATIVE_FLAG, m_regX < 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regX));
 }
 
 void CPU::tay(const opCode& code)
@@ -224,7 +248,7 @@ void CPU::tay(const opCode& code)
     m_regY = m_regA;
 
     setStatusBit(ZERO_FLAG, m_regY == 0);
-    setStatusBit(NEGATIVE_FLAG, m_regY < 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regY));
 }
 
 void CPU::tsx(const opCode& code)
@@ -232,7 +256,7 @@ void CPU::tsx(const opCode& code)
     m_regX = m_sp;
 
     setStatusBit(ZERO_FLAG, m_regX == 0);
-    setStatusBit(NEGATIVE_FLAG, m_regX < 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regX));
 }
 
 void CPU::txa(const opCode& code)
@@ -240,7 +264,7 @@ void CPU::txa(const opCode& code)
     m_regA = m_regX;
 
     setStatusBit(ZERO_FLAG, m_regA == 0);
-    setStatusBit(NEGATIVE_FLAG, m_regA < 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
 }
 
 void CPU::txs(const opCode& code)
@@ -248,7 +272,7 @@ void CPU::txs(const opCode& code)
     m_sp = m_regX;
 
     setStatusBit(ZERO_FLAG, m_sp == 0);
-    setStatusBit(NEGATIVE_FLAG, m_sp < 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_sp));
 }
 
 void CPU::tya(const opCode& code)
@@ -256,8 +280,10 @@ void CPU::tya(const opCode& code)
     m_regA = m_regY;
 
     setStatusBit(ZERO_FLAG, m_regA == 0);
-    setStatusBit(NEGATIVE_FLAG, m_regA < 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
 }
+
+#pragma GCC diagnostic pop
 
 b1 CPU::getA()
 {

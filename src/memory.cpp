@@ -22,7 +22,7 @@ b1 Memory::read1(b2 loc)
 void Memory::write1(b2 loc, b1 val)
 {
     assert(loc < m_data.size());
-    printf("\nwriting val: %X, to loc: %X\n", val, loc);
+    //printf("\nwriting val: %X, to loc: %X\n", val, loc);
 
     m_data[loc] = val;
 }
@@ -39,7 +39,7 @@ b2 Memory::read2(b2 loc)
 
 void Memory::write2(b2 loc, b2 val)
 {
-    printf("m_data.size: %d, loc: %d", m_data.size(), loc);
+    //printf("m_data.size: %d, loc: %d", m_data.size(), loc);
     assert(loc < m_data.size());
 
     write1(loc, val);
@@ -58,7 +58,6 @@ void Memory::printProgramMemory(b2 numBytes)
     b2 loc = PROG_START;
     b2 end = PROG_START + numBytes;
 
-    getchar();
     while(loc < end)
     {
         printf("LOC: %X, VALUE: %X\n", loc, m_data[loc]);
