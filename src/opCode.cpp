@@ -52,6 +52,28 @@ std::unordered_map<b1, opCode> codeMap =
     // BVS
     {0x70, {0x70, BVS, RELATIVE, 2, 2}},
 
+    // CLC
+    {0x18, {0x18, CLC, IMPLIED, 1, 2}},
+
+    // CLD
+    {0xD8, {0xD8, CLD, IMPLIED, 1, 2}},
+
+    // CLI
+    {0x58, {0x58, CLI, IMPLIED, 1, 2}},
+
+    // CLV
+    {0xB8, {0xB8, CLV, IMPLIED, 1, 2}},
+
+    // CMP
+    {0xC9, {0xC9, CMP, IMMEDIATE, 2, 2}},
+    {0xC5, {0xC5, CMP, ZERO_PAGE, 2, 3}},
+    {0xD5, {0xD5, CMP, ZERO_PAGE_X, 2, 4}},
+    {0xCD, {0xCD, CMP, ABSOLUTE, 3, 4}},
+    {0xDD, {0xDD, CMP, ABSOLUTE_X, 3, 4}},
+    {0xD9, {0xD9, CMP, ABSOLUTE_Y, 3, 4}},
+    {0xC1, {0xC1, CMP, INDIRECT_X, 2, 6}},
+    {0xD1, {0xD1, CMP, INDIRECT_Y, 2, 5}},
+
     // INX
     {0xE8, {0xE8, INX, IMPLIED, 1, 2}},
 
@@ -142,6 +164,16 @@ std::string instrStr(const instruction instr)
             return "BVC";
         case BVS:
             return "BVS";
+        case CLC:
+            return "CLC";
+        case CLD:
+            return "CLD";
+        case CLI:
+            return "CLI";
+        case CLV:
+            return "CLV";
+        case CMP:
+            return "CMP";
         case INX:
             return "INX";
         case LDA:

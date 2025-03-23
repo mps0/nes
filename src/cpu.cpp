@@ -66,6 +66,16 @@ void CPU::evaluate()
             return bvc(code);
         case BVS:
             return bvs(code);
+        case CLC:
+            return clc(code);
+        case CLD:
+            return cld(code);
+        case CLI:
+            return cli(code);
+        case CLV:
+            return clv(code);
+        case CMP:
+            return cmp(code);
         case INX:
             return inx(code);
         case LDA:
@@ -291,6 +301,36 @@ void CPU::bvs(const opCode& code)
 {
     if(isStatusBitSet(OVERFLOW_FLAG))
         branch(code);
+}
+
+void CPU::clc(const opCode& code)
+{
+    setStatusBit(CARRY_FLAG, false);
+}
+
+void CPU::cld(const opCode& code)
+{
+    setStatusBit(DECIMAL_MODE_FLAG, false);
+}
+
+void CPU::cli(const opCode& code)
+{
+    setStatusBit(INTERUPT_DISABLE_FLAG, false);
+}
+
+void CPU::clv(const opCode& code)
+{
+    setStatusBit(OVERFLOW_FLAG, false);
+}
+
+void CPU::cmp(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 val = m_mem.read1(loc);
+
+    setStatusBit(CARRY_FLAG, m_regA >= val);
+    setStatusBit(ZERO_FLAG, m_regA == val);
+    setStatusBit(NEGATIVE_FLAG, m_regA < val);
 }
 
 void CPU::sta(const opCode& code)

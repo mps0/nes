@@ -403,4 +403,61 @@ TEST_CASE("OPCodes")
 
         CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
     }
+
+    SUBCASE("CLC")
+    {
+        std::vector<b1> program = {0x18};
+
+        cpu.setStatus(CPU::CARRY_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(!cpu.isStatusBitSet(CPU::CARRY_FLAG));
+    }
+
+    SUBCASE("CLD")
+    {
+        std::vector<b1> program = {0xD8};
+
+        cpu.setStatus(CPU::DECIMAL_MODE_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(!cpu.isStatusBitSet(CPU::DECIMAL_MODE_FLAG));
+    }
+
+    SUBCASE("CLI")
+    {
+        std::vector<b1> program = {0x58};
+
+        cpu.setStatus(CPU::INTERUPT_DISABLE_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(!cpu.isStatusBitSet(CPU::INTERUPT_DISABLE_FLAG));
+    }
+
+    SUBCASE("CLV")
+    {
+        std::vector<b1> program = {0xB8};
+
+        cpu.setStatus(CPU::OVERFLOW_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(!cpu.isStatusBitSet(CPU::OVERFLOW_FLAG));
+    }
+
+    SUBCASE("CMP")
+    {
+        std::vector<b1> program = {0xC9, 0x0F};
+
+        cpu.setA(0xFF);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.isStatusBitSet(CPU::CARRY_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::ZERO_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::NEGATIVE_FLAG));
+    }
 }

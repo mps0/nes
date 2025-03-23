@@ -12,7 +12,7 @@ public:
     {
         CARRY_FLAG = 1 << 0,
         ZERO_FLAG = 1 << 1,
-        INTERUPT_DISABLE = 1 << 2,
+        INTERUPT_DISABLE_FLAG = 1 << 2,
         DECIMAL_MODE_FLAG = 1 << 3,
         BREAK_COMMND = 1 << 4,
         OVERFLOW_FLAG = 1 << 5,
@@ -64,6 +64,11 @@ private:
     void brk(const opCode& code);
     void bvc(const opCode& code);
     void bvs(const opCode& code);
+    void clc(const opCode& code);
+    void cld(const opCode& code);
+    void cli(const opCode& code);
+    void clv(const opCode& code);
+    void cmp(const opCode& code);
     void inx(const opCode& code);
     void lda(const opCode& code);
     void sta(const opCode& code);
