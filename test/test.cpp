@@ -315,4 +315,40 @@ TEST_CASE("OPCodes")
 
         CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
     }
+
+    SUBCASE("BCS")
+    {
+        std::vector<b1> program = {0xB0, 0x31};
+
+        cpu.setStatus(CPU::CARRY_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
+    }
+
+    SUBCASE("BEQ")
+    {
+        std::vector<b1> program = {0xF0, 0x31};
+
+        cpu.setStatus(CPU::ZERO_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
+    }
+
+    SUBCASE("BIT")
+    {
+        std::vector<b1> program = {0x24, 0x31};
+
+        cpu.setA(0xFF);
+        mem.write1(0x31, 0x40);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.isStatusBitSet(CPU::OVERFLOW_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::NEGATIVE_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::ZERO_FLAG));
+    }
 }

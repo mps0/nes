@@ -24,6 +24,16 @@ std::unordered_map<b1, opCode> codeMap =
     // BCC
     {0x90, {0x90, BCC, RELATIVE, 2, 2}},
 
+    // BCS
+    {0xB0, {0xB0, BCS, RELATIVE, 2, 2}},
+
+    // BEQ
+    {0xF0, {0xF0, BEQ, RELATIVE, 2, 2}},
+
+    // BIT
+    {0x24, {0x24, BIT, ZERO_PAGE, 2, 3}},
+    {0x2C, {0x2C, BIT, ABSOLUTE, 3, 4}},
+
     // BRK
     {0x00, {0x00, BRK, IMPLIED, 1, 7}},
 
@@ -99,6 +109,12 @@ std::string instrStr(const instruction instr)
             return "ASL";
         case BCC:
             return "BCC";
+        case BCS:
+            return "BCS";
+        case BEQ:
+            return "BEQ";
+        case BIT:
+            return "BIT";
         case BRK:
             return "BRK";
         case INX:

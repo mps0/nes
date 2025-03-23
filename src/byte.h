@@ -13,9 +13,16 @@ using sb2 = int16_t;
 constexpr uint8_t nBit1 = 1u << 7u;
 constexpr uint16_t nBit2 = 1u << 15u;
 
+constexpr uint8_t overflowBit = 1u << 6;
+
 inline bool negBitSet(b1 b)
 {
     return nBit1 & b;
+}
+
+inline bool overflowBitSet(b1 b)
+{
+    return overflowBit & b;
 }
 
 inline bool negBitSet(b2 b)

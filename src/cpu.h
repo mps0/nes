@@ -43,17 +43,21 @@ public:
     void setStatus(b1 v);
     void setPC(b2 v);
 
+    void setStatusBit(statusBit bit, bool set);
+    bool isStatusBitSet(statusBit bit);
+
 private:
     b1 get();
     b1 eat();
     b2 getAddr(addressMode mode);
     void evaluate();
 
-    void setStatusBit(statusBit bit, bool set);
-
     void _and(const opCode& code);
     void asl(const opCode& code);
     void bcc(const opCode& code);
+    void bcs(const opCode& code);
+    void beq(const opCode& code);
+    void bit(const opCode& code);
     void brk(const opCode& code);
     void inx(const opCode& code);
     void lda(const opCode& code);
@@ -66,6 +70,8 @@ private:
     void txa(const opCode& code);
     void txs(const opCode& code);
     void tya(const opCode& code);
+
+    void branch(const opCode& code);
 
     bool m_run;
 

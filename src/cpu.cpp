@@ -48,6 +48,12 @@ void CPU::evaluate()
             return asl(code);
         case BCC:
             return bcc(code);
+        case BCS:
+            return bcs(code);
+        case BEQ:
+            return beq(code);
+        case BIT:
+            return bit(code);
         case BRK:
             return brk(code);
         case INX:
@@ -143,8 +149,19 @@ void CPU::setStatusBit(statusBit bit, bool set)
         m_status &= ~bit;
 }
 
+bool CPU::isStatusBitSet(statusBit bit)
+{
+    return m_status & bit;
+}
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+
+void CPU::branch(const opCode& code)
+{
+    b1 loc = getAddr(code.addrMode);
+    m_pc = negBitSet(loc) ? m_pc - (0x0100 - loc) : m_pc + loc;
+}
 
 void CPU::_and(const opCode& code)
 {
@@ -204,8 +221,29 @@ void CPU::bcc(const opCode& code)
     if(m_status & CARRY_FLAG)
         return;
 
-    b1 loc = getAddr(code.addrMode);
-    m_pc = negBitSet(loc) ? m_pc - (0x0100 - loc) : m_pc + loc;
+    branch(code);
+}
+
+void CPU::bcs(const opCode& code)
+{
+    if(m_status & CARRY_FLAG)
+        branch(code);
+}
+
+void CPU::beq(const opCode& code)
+{
+    if(m_status & ZERO_FLAG)
+        branch(code);
+}
+
+void CPU::bit(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 res = m_regA & m_mem.read1(loc);
+
+    setStatusBit(ZERO_FLAG, res == 0);
+    setStatusBit(OVERFLOW_FLAG, overflowBitSet(res));
+    setStatusBit(NEGATIVE_FLAG, negBitSet(res));
 }
 
 void CPU::brk(const opCode& code)
