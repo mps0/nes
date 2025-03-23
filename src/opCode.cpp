@@ -34,8 +34,23 @@ std::unordered_map<b1, opCode> codeMap =
     {0x24, {0x24, BIT, ZERO_PAGE, 2, 3}},
     {0x2C, {0x2C, BIT, ABSOLUTE, 3, 4}},
 
+    // BMI
+    {0x30, {0x30, BMI, RELATIVE, 2, 2}},
+
+    // BNE
+    {0xD0, {0xd0, BNE, RELATIVE, 2, 2}},
+
+    // BPL
+    {0x10, {0x10, BPL, RELATIVE, 2, 2}},
+
     // BRK
     {0x00, {0x00, BRK, IMPLIED, 1, 7}},
+
+    // BVC
+    {0x50, {0x50, BVC, RELATIVE, 2, 2}},
+
+    // BVS
+    {0x70, {0x70, BVS, RELATIVE, 2, 2}},
 
     // INX
     {0xE8, {0xE8, INX, IMPLIED, 1, 2}},
@@ -115,8 +130,18 @@ std::string instrStr(const instruction instr)
             return "BEQ";
         case BIT:
             return "BIT";
+        case BMI:
+            return "BMI";
+        case BNE:
+            return "BNE";
         case BRK:
             return "BRK";
+        case BPL:
+            return "BPL";
+        case BVC:
+            return "BVC";
+        case BVS:
+            return "BVS";
         case INX:
             return "INX";
         case LDA:

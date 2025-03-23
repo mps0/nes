@@ -351,4 +351,56 @@ TEST_CASE("OPCodes")
         CHECK(!cpu.isStatusBitSet(CPU::NEGATIVE_FLAG));
         CHECK(!cpu.isStatusBitSet(CPU::ZERO_FLAG));
     }
+
+    SUBCASE("BMI")
+    {
+        std::vector<b1> program = {0x30, 0x31};
+
+        cpu.setStatus(CPU::NEGATIVE_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
+    }
+
+    SUBCASE("BMI")
+    {
+        std::vector<b1> program = {0xD0, 0x31};
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
+    }
+
+    SUBCASE("BPL")
+    {
+        std::vector<b1> program = {0x10, 0x31};
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
+    }
+
+    SUBCASE("BVC")
+    {
+        std::vector<b1> program = {0x50, 0x31};
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
+    }
+
+    SUBCASE("BVS")
+    {
+        std::vector<b1> program = {0x70, 0x31};
+
+        cpu.setStatus(CPU::OVERFLOW_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == (Memory::PROG_START + 0x31 + 2));
+    }
 }

@@ -58,7 +58,12 @@ private:
     void bcs(const opCode& code);
     void beq(const opCode& code);
     void bit(const opCode& code);
+    void bmi(const opCode& code);
+    void bne(const opCode& code);
+    void bpl(const opCode& code);
     void brk(const opCode& code);
+    void bvc(const opCode& code);
+    void bvs(const opCode& code);
     void inx(const opCode& code);
     void lda(const opCode& code);
     void sta(const opCode& code);

@@ -54,8 +54,18 @@ void CPU::evaluate()
             return beq(code);
         case BIT:
             return bit(code);
+        case BMI:
+            return bmi(code);
+        case BNE:
+            return bne(code);
         case BRK:
             return brk(code);
+        case BPL:
+            return bpl(code);
+        case BVC:
+            return bvc(code);
+        case BVS:
+            return bvs(code);
         case INX:
             return inx(code);
         case LDA:
@@ -218,21 +228,19 @@ void CPU::inx(const opCode& code)
 
 void CPU::bcc(const opCode& code)
 {
-    if(m_status & CARRY_FLAG)
-        return;
-
-    branch(code);
+    if(!(isStatusBitSet(CARRY_FLAG)))
+        branch(code);
 }
 
 void CPU::bcs(const opCode& code)
 {
-    if(m_status & CARRY_FLAG)
+    if(isStatusBitSet(CARRY_FLAG))
         branch(code);
 }
 
 void CPU::beq(const opCode& code)
 {
-    if(m_status & ZERO_FLAG)
+    if(isStatusBitSet(ZERO_FLAG))
         branch(code);
 }
 
@@ -246,6 +254,24 @@ void CPU::bit(const opCode& code)
     setStatusBit(NEGATIVE_FLAG, negBitSet(res));
 }
 
+void CPU::bmi(const opCode& code)
+{
+    if(isStatusBitSet(NEGATIVE_FLAG))
+        branch(code);
+}
+
+void CPU::bne(const opCode& code)
+{
+    if(!(isStatusBitSet(ZERO_FLAG)))
+        branch(code);
+}
+
+void CPU::bpl(const opCode& code)
+{
+    if(!(isStatusBitSet(NEGATIVE_FLAG)))
+        branch(code);
+}
+
 void CPU::brk(const opCode& code)
 {
     m_pc = m_mem.read2(Memory::BRK_ADDR);
@@ -253,6 +279,18 @@ void CPU::brk(const opCode& code)
     //printf("m_pc: %X, BRK_ADDR: %X\n", m_pc, Memory::BRK_ADDR);
     setStatusBit(BREAK_COMMND, true);
     m_run = false;
+}
+
+void CPU::bvc(const opCode& code)
+{
+    if(!(isStatusBitSet(OVERFLOW_FLAG)))
+        branch(code);
+}
+
+void CPU::bvs(const opCode& code)
+{
+    if(isStatusBitSet(OVERFLOW_FLAG))
+        branch(code);
 }
 
 void CPU::sta(const opCode& code)
