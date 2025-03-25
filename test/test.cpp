@@ -137,16 +137,6 @@ TEST_CASE("OPCodes")
     Memory mem;
     CPU cpu(mem);
 
-    SUBCASE("LDA")
-    {
-        std::vector<b1> program = {0xA9, 0xB7};
-
-        mem.load(program);
-        cpu.run(1);
-
-        CHECK(cpu.getA() == 0xB7);
-    }
-
     SUBCASE("AND")
     {
         std::vector<b1> program = {0x29, 0x2F};
@@ -556,4 +546,44 @@ TEST_CASE("OPCodes")
         CHECK(cpu.getY() == 2);
     }
 
+    SUBCASE("JMP")
+    {
+        std::vector<b1> program = {0x6C, 0x01, 0xFF};
+
+        mem.write2(0x01FF, 0xAAAA);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getPC() == 0xAAAA);
+    }
+
+    SUBCASE("LDA")
+    {
+        std::vector<b1> program = {0xA9, 0xB7};
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getA() == 0xB7);
+    }
+
+    SUBCASE("LDX")
+    {
+        std::vector<b1> program = {0xA2, 0xB7};
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getX() == 0xB7);
+    }
+
+    SUBCASE("LDY")
+    {
+        std::vector<b1> program = {0xA0, 0xB7};
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getY() == 0xB7);
+    }
 }

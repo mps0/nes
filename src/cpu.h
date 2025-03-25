@@ -78,7 +78,11 @@ private:
     void inc(const opCode& code);
     void inx(const opCode& code);
     void iny(const opCode& code);
+    void jmp(const opCode& code);
+    void jsr(const opCode& code);
     void lda(const opCode& code);
+    void ldx(const opCode& code);
+    void ldy(const opCode& code);
     void sta(const opCode& code);
     void stx(const opCode& code);
     void sty(const opCode& code);

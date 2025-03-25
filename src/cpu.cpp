@@ -94,8 +94,16 @@ void CPU::evaluate()
             return inx(code);
         case INY:
             return iny(code);
+        case JMP:
+            return jmp(code);
+        case JSR:
+            return jsr(code);
         case LDA:
             return lda(code);
+        case LDX:
+            return ldx(code);
+        case LDY:
+            return ldy(code);
         case STA:
             return sta(code);
         case STX:
@@ -139,9 +147,13 @@ b2 CPU::getAddr(addressMode mode)
             return (fb << 8) | (eat() + m_regX);
         case ABSOLUTE_Y:
             return (fb << 8) | (eat() + m_regY);
-            //TODO wrong?
         case INDIRECT:
-            return (fb << 8) | eat();
+            {
+                b2 addr = (fb << 8) | eat();
+                b2 lo = m_mem.read1(addr);
+                b2 hi = m_mem.read1(addr + 1);
+                return (hi << 8) | lo;
+            }
         case INDIRECT_X:
             {
                 b1 zpAddr = fb + m_regX;
@@ -242,6 +254,24 @@ void CPU::lda(const opCode& code)
 
     setStatusBit(ZERO_FLAG, m_regA == 0);
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
+}
+
+void CPU::ldx(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    m_regX = m_mem.read1(loc);
+
+    setStatusBit(ZERO_FLAG, m_regX == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regX));
+}
+
+void CPU::ldy(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    m_regY = m_mem.read1(loc);
+
+    setStatusBit(ZERO_FLAG, m_regY == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regY));
 }
 
 void CPU::bcc(const opCode& code)
@@ -428,6 +458,17 @@ void CPU::iny(const opCode& code)
 
     setStatusBit(ZERO_FLAG, m_regY == 0);
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regY));
+}
+
+void CPU::jmp(const opCode& code)
+{
+    m_pc = getAddr(code.addrMode);
+}
+
+//TODO
+void CPU::jsr(const opCode& code)
+{
+    m_pc = getAddr(code.addrMode);
 }
 
 void CPU::sta(const opCode& code)

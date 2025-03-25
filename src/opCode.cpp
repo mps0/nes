@@ -118,6 +118,13 @@ std::unordered_map<b1, opCode> codeMap =
     // INY
     {0xC8, {0xC8, INY, IMPLIED, 1, 2}},
 
+    // JMP
+    {0x4C, {0x4C, JMP, ABSOLUTE, 3, 3}},
+    {0x6C, {0x6C, JMP, INDIRECT, 3, 5}},
+
+    // JSR
+    {0x20, {0x20, JSR, ABSOLUTE, 3, 6}},
+
     // LDA
     {0xA9, {0xA9, LDA, IMMEDIATE, 2, 2}},
     {0xA5, {0xA5, LDA, ZERO_PAGE, 2, 3}},
@@ -127,6 +134,20 @@ std::unordered_map<b1, opCode> codeMap =
     {0xB9, {0xB9, LDA, ABSOLUTE_Y, 3, 4}},
     {0xA1, {0xA1, LDA, INDIRECT_X, 2, 6}},
     {0xB1, {0xB1, LDA, INDIRECT_Y, 2, 5}},
+
+    // LDX
+    {0xA2, {0xA2, LDX, IMMEDIATE, 2, 2}},
+    {0xA6, {0xA6, LDX, ZERO_PAGE, 2, 3}},
+    {0xB6, {0xB6, LDX, ZERO_PAGE_Y, 2, 4}},
+    {0xAE, {0xAE, LDX, ABSOLUTE, 3, 4}},
+    {0xBE, {0xBE, LDX, ABSOLUTE_Y, 3, 4}},
+
+    // LDY
+    {0xA0, {0xA0, LDY, IMMEDIATE, 2, 2}},
+    {0xA4, {0xA4, LDY, ZERO_PAGE, 2, 3}},
+    {0xB4, {0xB4, LDY, ZERO_PAGE_X, 2, 4}},
+    {0xAC, {0xAC, LDY, ABSOLUTE, 3, 4}},
+    {0xBC, {0xBC, LDY, ABSOLUTE_X, 3, 4}},
 
     // STA
     {0x85, {0x85, STA, ZERO_PAGE, 2, 3}},
@@ -233,8 +254,16 @@ std::string instrStr(const instruction instr)
             return "INX";
         case INY:
             return "INY";
+        case JMP:
+            return "JMP";
+        case JSR:
+            return "JSR";
         case LDA:
             return "LDA";
+        case LDX:
+            return "LDX";
+        case LDY:
+            return "LDY";
         case STA:
             return "STA";
         case STX:
