@@ -69,7 +69,15 @@ private:
     void cli(const opCode& code);
     void clv(const opCode& code);
     void cmp(const opCode& code);
+    void cpx(const opCode& code);
+    void cpy(const opCode& code);
+    void dec(const opCode& code);
+    void dex(const opCode& code);
+    void dey(const opCode& code);
+    void eor(const opCode& code);
+    void inc(const opCode& code);
     void inx(const opCode& code);
+    void iny(const opCode& code);
     void lda(const opCode& code);
     void sta(const opCode& code);
     void stx(const opCode& code);

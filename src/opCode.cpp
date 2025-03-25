@@ -74,8 +74,49 @@ std::unordered_map<b1, opCode> codeMap =
     {0xC1, {0xC1, CMP, INDIRECT_X, 2, 6}},
     {0xD1, {0xD1, CMP, INDIRECT_Y, 2, 5}},
 
+    // CPX
+    {0xE0, {0xE0, CPX, IMMEDIATE, 2, 2}},
+    {0xE4, {0xE4, CPX, ZERO_PAGE, 2, 3}},
+    {0xEC, {0xEC, CPX, ABSOLUTE, 3, 4}},
+
+    // CPY
+    {0xC0, {0xC0, CPY, IMMEDIATE, 2, 2}},
+    {0xC4, {0xC4, CPY, ZERO_PAGE, 2, 3}},
+    {0xCC, {0xCC, CPY, ABSOLUTE, 3, 4}},
+
+    // DEC
+    {0xC6, {0xC6, DEC, ZERO_PAGE, 2, 5}},
+    {0xD6, {0xD6, DEC, ZERO_PAGE_X, 2, 6}},
+    {0xCE, {0xCE, DEC, ABSOLUTE, 3, 6}},
+    {0xDE, {0xDE, DEC, ABSOLUTE_X, 3, 7}},
+
+    // DEX
+    {0xCA, {0xCA, DEX, IMPLIED, 1, 2}},
+
+    // DEY
+    {0x88, {0x88, DEY, IMPLIED, 1, 2}},
+
+    // EOR
+    {0x49, {0x49, EOR, IMMEDIATE, 2, 2}},
+    {0x45, {0x45, EOR, ZERO_PAGE, 2, 3}},
+    {0x55, {0x55, EOR, ZERO_PAGE_X, 2, 4}},
+    {0x4D, {0x4D, EOR, ABSOLUTE, 3, 4}},
+    {0x5D, {0x5D, EOR, ABSOLUTE_X, 3, 4}},
+    {0x59, {0x59, EOR, ABSOLUTE_Y, 3, 4}},
+    {0x41, {0x41, EOR, INDIRECT_X, 2, 6}},
+    {0x51, {0x51, EOR, INDIRECT_Y, 2, 5}},
+
+    // INC
+    {0xE6, {0xE6, INC, ZERO_PAGE, 2, 5}},
+    {0xF6, {0xF6, INC, ZERO_PAGE_X, 2, 6}},
+    {0xEE, {0xEE, INC, ABSOLUTE, 3, 6}},
+    {0xFE, {0xFE, INC, ABSOLUTE_X, 3, 7}},
+
     // INX
     {0xE8, {0xE8, INX, IMPLIED, 1, 2}},
+
+    // INY
+    {0xC8, {0xC8, INY, IMPLIED, 1, 2}},
 
     // LDA
     {0xA9, {0xA9, LDA, IMMEDIATE, 2, 2}},
@@ -174,8 +215,24 @@ std::string instrStr(const instruction instr)
             return "CLV";
         case CMP:
             return "CMP";
+        case CPX:
+            return "CPX";
+        case CPY:
+            return "CPY";
+        case DEC:
+            return "DEC";
+        case DEX:
+            return "DEX";
+        case DEY:
+            return "DEY";
+        case EOR:
+            return "EOR";
+        case INC:
+            return "INC";
         case INX:
             return "INX";
+        case INY:
+            return "INY";
         case LDA:
             return "LDA";
         case STA:

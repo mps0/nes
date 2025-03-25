@@ -10,24 +10,18 @@ using sb1 = int8_t;
 using b2 = uint16_t;
 using sb2 = int16_t;
 
-constexpr uint8_t nBit1 = 1u << 7u;
-constexpr uint16_t nBit2 = 1u << 15u;
+constexpr uint8_t nBit = 1u << 7u;
 
 constexpr uint8_t overflowBit = 1u << 6;
 
 inline bool negBitSet(b1 b)
 {
-    return nBit1 & b;
+    return nBit & b;
 }
 
 inline bool overflowBitSet(b1 b)
 {
     return overflowBit & b;
-}
-
-inline bool negBitSet(b2 b)
-{
-    return nBit2 & b;
 }
 
 inline b2 toLittleEndian(b2 b)

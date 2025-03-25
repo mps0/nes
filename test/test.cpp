@@ -183,18 +183,6 @@ TEST_CASE("OPCodes")
         CHECK(mem.read1(0x0F11) == (0x22 << 1));
     }
 
-    SUBCASE("INX")
-    {
-        std::vector<b1> program = {0xE8};
-
-        cpu.setX(1);
-
-        mem.load(program);
-        cpu.run(1);
-
-        CHECK(cpu.getX() == 2);
-    }
-
     SUBCASE("BRK")
     {
         std::vector<b1> program = {0x00};
@@ -460,4 +448,112 @@ TEST_CASE("OPCodes")
         CHECK(!cpu.isStatusBitSet(CPU::ZERO_FLAG));
         CHECK(!cpu.isStatusBitSet(CPU::NEGATIVE_FLAG));
     }
+
+    SUBCASE("CPX")
+    {
+        std::vector<b1> program = {0xE0, 0x0F};
+
+        cpu.setX(0xFF);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.isStatusBitSet(CPU::CARRY_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::ZERO_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::NEGATIVE_FLAG));
+    }
+
+    SUBCASE("CPY")
+    {
+        std::vector<b1> program = {0xC0, 0x0F};
+
+        cpu.setY(0xFF);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.isStatusBitSet(CPU::CARRY_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::ZERO_FLAG));
+        CHECK(!cpu.isStatusBitSet(CPU::NEGATIVE_FLAG));
+    }
+
+    SUBCASE("DEC")
+    {
+        std::vector<b1> program = {0xD6, 0x01};
+
+        mem.write1(0x0F, 0x0A);
+        cpu.setX(0x0E);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(mem.read1(0x0F) == 0x09);
+    }
+
+    SUBCASE("DEX")
+    {
+        std::vector<b1> program = {0xCA};
+
+        cpu.setX(0x0E);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getX() == 0x0D);
+    }
+
+    SUBCASE("DEY")
+    {
+        std::vector<b1> program = {0x88};
+
+        cpu.setY(0x0E);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getY() == 0x0D);
+    }
+
+    SUBCASE("EOR")
+    {
+        std::vector<b1> program = {0x49, 0x0F};
+
+        cpu.setA(0x03);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getA() == 0x0C);
+    }
+
+    SUBCASE("INC")
+    {
+        std::vector<b1> program = {0xE6, 0x10};
+
+        mem.write1(0x10, 0x02);
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(mem.read1(0x10) == 0x03);
+    }
+
+    SUBCASE("INX")
+    {
+        std::vector<b1> program = {0xE8};
+
+        cpu.setX(1);
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getX() == 2);
+    }
+
+    SUBCASE("INY")
+    {
+        std::vector<b1> program = {0xC8};
+
+        cpu.setY(1);
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getY() == 2);
+    }
+
 }

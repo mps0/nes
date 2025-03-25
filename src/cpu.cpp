@@ -76,8 +76,24 @@ void CPU::evaluate()
             return clv(code);
         case CMP:
             return cmp(code);
+        case CPX:
+            return cpx(code);
+        case CPY:
+            return cpy(code);
+        case DEC:
+            return dec(code);
+        case DEX:
+            return dex(code);
+        case DEY:
+            return dey(code);
+        case EOR:
+            return eor(code);
+        case INC:
+            return inc(code);
         case INX:
             return inx(code);
+        case INY:
+            return iny(code);
         case LDA:
             return lda(code);
         case STA:
@@ -228,14 +244,6 @@ void CPU::lda(const opCode& code)
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
 }
 
-void CPU::inx(const opCode& code)
-{
-    m_regX = m_regX + 1;
-
-    setStatusBit(ZERO_FLAG, m_regX == 0);
-    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regX));
-}
-
 void CPU::bcc(const opCode& code)
 {
     if(!(isStatusBitSet(CARRY_FLAG)))
@@ -331,6 +339,95 @@ void CPU::cmp(const opCode& code)
     setStatusBit(CARRY_FLAG, m_regA >= val);
     setStatusBit(ZERO_FLAG, m_regA == val);
     setStatusBit(NEGATIVE_FLAG, m_regA < val);
+}
+
+void CPU::cpx(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 val = m_mem.read1(loc);
+
+    setStatusBit(CARRY_FLAG, m_regX >= val);
+    setStatusBit(ZERO_FLAG, m_regX == val);
+    setStatusBit(NEGATIVE_FLAG, m_regX < val);
+}
+
+void CPU::cpy(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 val = m_mem.read1(loc);
+
+    setStatusBit(CARRY_FLAG, m_regY >= val);
+    setStatusBit(ZERO_FLAG, m_regY == val);
+    setStatusBit(NEGATIVE_FLAG, m_regY < val);
+}
+
+void CPU::dec(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 val = m_mem.read1(loc);
+
+    --val;
+
+    m_mem.write1(loc, val);
+
+    setStatusBit(ZERO_FLAG, val == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(val));
+}
+
+void CPU::dex(const opCode& code)
+{
+    --m_regX;
+
+    setStatusBit(ZERO_FLAG, m_regX == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regX));
+}
+
+void CPU::dey(const opCode& code)
+{
+    --m_regY;
+
+    setStatusBit(ZERO_FLAG, m_regY == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regY));
+}
+
+void CPU::eor(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 val = m_mem.read1(loc);
+
+    m_regA ^= val;
+
+    setStatusBit(ZERO_FLAG, m_regA == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
+}
+
+void CPU::inc(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 val = m_mem.read1(loc);
+
+    ++val;
+
+    m_mem.write1(loc, val);
+
+    setStatusBit(ZERO_FLAG, val == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(val));
+}
+
+void CPU::inx(const opCode& code)
+{
+    ++m_regX;
+
+    setStatusBit(ZERO_FLAG, m_regX == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regX));
+}
+
+void CPU::iny(const opCode& code)
+{
+    ++m_regY;
+
+    setStatusBit(ZERO_FLAG, m_regY == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regY));
 }
 
 void CPU::sta(const opCode& code)
