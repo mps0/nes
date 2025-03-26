@@ -83,6 +83,18 @@ private:
     void lda(const opCode& code);
     void ldx(const opCode& code);
     void ldy(const opCode& code);
+    void lsr(const opCode& code);
+    void nop(const opCode& code);
+    void ora(const opCode& code);
+    void pha(const opCode& code);
+    void php(const opCode& code);
+    void pla(const opCode& code);
+    void plp(const opCode& code);
+    void rol(const opCode& code);
+    void ror(const opCode& code);
+    void rti(const opCode& code);
+    void rts(const opCode& code);
+    void sbc(const opCode& code);
     void sta(const opCode& code);
     void stx(const opCode& code);
     void sty(const opCode& code);

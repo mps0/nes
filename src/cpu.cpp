@@ -104,6 +104,30 @@ void CPU::evaluate()
             return ldx(code);
         case LDY:
             return ldy(code);
+        case LSR:
+            return lsr(code);
+        case NOP:
+            return nop(code);
+        case ORA:
+            return ora(code);
+        case PHA:
+            return pha(code);
+        case PHP:
+            return php(code);
+        case PLA:
+            return pla(code);
+        case PLP:
+            return plp(code);
+        case ROL:
+            return rol(code);
+        case ROR:
+            return ror(code);
+        case RTI:
+            return rti(code);
+        case RTS:
+            return rts(code);
+        case SBC:
+            return sbc(code);
         case STA:
             return sta(code);
         case STX:
@@ -272,6 +296,136 @@ void CPU::ldy(const opCode& code)
 
     setStatusBit(ZERO_FLAG, m_regY == 0);
     setStatusBit(NEGATIVE_FLAG, negBitSet(m_regY));
+}
+
+void CPU::lsr(const opCode& code)
+{
+    if(code.addrMode == ACCUMULATOR)
+    {
+        setStatusBit(CARRY_FLAG, m_regA & 0x01);
+        m_regA = m_regA >> 1;
+
+        setStatusBit(ZERO_FLAG, m_regA == 0);
+        setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
+    }
+    else
+    {
+        b2 loc = getAddr(code.addrMode);
+        b1 val = m_mem.read1(loc);
+
+        setStatusBit(CARRY_FLAG, val & 0x01);
+
+        val = val >> 1;
+        m_mem.write1(loc, val);
+
+        setStatusBit(ZERO_FLAG, val == 0);
+        setStatusBit(NEGATIVE_FLAG, negBitSet(val));
+    }
+}
+
+void CPU::nop(const opCode& code)
+{
+}
+
+void CPU::ora(const opCode& code)
+{
+    b2 loc = getAddr(code.addrMode);
+    b1 mask = m_mem.read1(loc);
+
+    m_regA |= mask;
+
+    setStatusBit(ZERO_FLAG, m_regA == 0);
+    setStatusBit(NEGATIVE_FLAG, negBitSet(m_regA));
+}
+
+void CPU::pha(const opCode& code)
+{
+    m_mem.write1(Memory::STACK_START + m_sp, m_regA);
+    ++m_sp;
+}
+
+void CPU::php(const opCode& code)
+{
+    m_mem.write1(Memory::STACK_START + m_sp, m_status);
+    ++m_sp;
+}
+
+void CPU::pla(const opCode& code)
+{
+    m_regA = m_mem.read1(Memory::STACK_START + m_sp - 1);
+    --m_sp;
+
+    setStatusBit(ZERO_FLAG, m_regA == 0);
+}
+
+void CPU::plp(const opCode& code)
+{
+    m_status = m_mem.read1(Memory::STACK_START + m_sp - 1);
+    --m_sp;
+}
+
+void CPU::rol(const opCode& code)
+{
+    if(code.addrMode == ACCUMULATOR)
+    {
+        b1 newVal = m_regA << 1;
+        b1 mask = isStatusBitSet(CARRY_FLAG) ? 0x01 : 0x00;
+        newVal |= mask;
+
+        setStatusBit(CARRY_FLAG, m_regA & 0x80);
+
+        m_regA = newVal;
+    }
+    else
+    {
+        b2 loc = getAddr(code.addrMode);
+        b1 val = m_mem.read1(loc);
+        b1 newVal = val << 1;
+        b1 mask = isStatusBitSet(CARRY_FLAG) ? 0x01 : 0x00;
+        newVal |= mask;
+
+        setStatusBit(CARRY_FLAG, newVal & 0x80);
+
+        m_mem.write1(loc, newVal);
+    }
+}
+
+void CPU::ror(const opCode& code)
+{
+    if(code.addrMode == ACCUMULATOR)
+    {
+        b1 newVal = m_regA >> 1;
+        b1 mask = isStatusBitSet(CARRY_FLAG) ? 0x80 : 0x00;
+        newVal |= mask;
+
+        setStatusBit(CARRY_FLAG, m_regA & 0x01);
+
+        m_regA = newVal;
+    }
+    else
+    {
+        b2 loc = getAddr(code.addrMode);
+        b1 val = m_mem.read1(loc);
+        b1 newVal = val >> 1;
+        b1 mask = isStatusBitSet(CARRY_FLAG) ? 0x80 : 0x00;
+        newVal |= mask;
+
+        setStatusBit(CARRY_FLAG, newVal & 0x01);
+
+        m_mem.write1(loc, newVal);
+    }
+}
+
+void CPU::rti(const opCode& code)
+{
+}
+
+void CPU::rts(const opCode& code)
+{
+}
+
+void CPU::sbc(const opCode& code)
+{
 }
 
 void CPU::bcc(const opCode& code)

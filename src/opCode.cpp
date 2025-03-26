@@ -149,6 +149,62 @@ std::unordered_map<b1, opCode> codeMap =
     {0xAC, {0xAC, LDY, ABSOLUTE, 3, 4}},
     {0xBC, {0xBC, LDY, ABSOLUTE_X, 3, 4}},
 
+    // LSR
+    {0x4A, {0x4A, LSR, ACCUMULATOR, 1, 2}},
+    {0x46, {0x46, LSR, ZERO_PAGE, 2, 5}},
+    {0x56, {0x56, LSR, ZERO_PAGE_X, 2, 6}},
+    {0x4E, {0x4E, LSR, ABSOLUTE, 3, 6}},
+    {0x5E, {0x5E, LSR, ABSOLUTE_X, 3, 7}},
+
+    // NOP
+    {0xEA, {0xEA, NOP, IMPLIED, 1, 2}},
+
+    // ORA
+    {0x09, {0x09, ORA, IMMEDIATE, 2, 2}},
+    {0x05, {0x05, ORA, ZERO_PAGE, 2, 3}},
+    {0x15, {0x15, ORA, ZERO_PAGE_X, 2, 4}},
+    {0x0D, {0x0D, ORA, ABSOLUTE, 3, 4}},
+    {0x1D, {0x1D, ORA, ABSOLUTE_X, 3, 4}},
+    {0x19, {0x19, ORA, ABSOLUTE_Y, 3, 4}},
+    {0x01, {0x01, ORA, INDIRECT_X, 2, 6}},
+    {0x11, {0x11, ORA, INDIRECT_Y, 2, 5}},
+
+    // PHA
+    {0x48, {0x48, PHA, IMPLIED, 1, 3}},
+
+    // PHP
+    {0x08, {0x08, PHP, IMPLIED, 1, 3}},
+
+    // PLA
+    {0x68, {0x68, PLA, IMPLIED, 1, 4}},
+
+    // PLP
+    {0x28, {0x28, PLP, IMPLIED, 1, 4}},
+
+    // ROL
+    {0x2A, {0x2A, ROL, ACCUMULATOR, 1, 2}},
+    {0x26, {0x26, ROL, ZERO_PAGE, 2, 5}},
+    {0x36, {0x36, ROL, ZERO_PAGE_X, 2, 6}},
+    {0x2E, {0x2E, ROL, ABSOLUTE, 3, 6}},
+    {0x3E, {0x3E, ROL, ABSOLUTE_X, 3, 7}},
+
+    // ROR
+    {0x6A, {0x2A, ROR, ACCUMULATOR, 1, 2}},
+    {0x66, {0x26, ROR, ZERO_PAGE, 2, 5}},
+    {0x76, {0x36, ROR, ZERO_PAGE_X, 2, 6}},
+    {0x6E, {0x2E, ROR, ABSOLUTE, 3, 6}},
+    {0x7E, {0x3E, ROR, ABSOLUTE_X, 3, 7}},
+
+    // SBC
+    {0xE9, {0xE9, SBC, IMMEDIATE, 2, 2}},
+    {0xE5, {0xE5, SBC, ZERO_PAGE, 2, 3}},
+    {0xF5, {0xF5, SBC, ZERO_PAGE_X, 2, 4}},
+    {0xED, {0xED, SBC, ABSOLUTE, 3, 4}},
+    {0xFD, {0xFD, SBC, ABSOLUTE_X, 3, 4}},
+    {0xF9, {0xF9, SBC, ABSOLUTE_Y, 3, 4}},
+    {0xE1, {0xE1, SBC, INDIRECT_X, 2, 6}},
+    {0xF1, {0xF1, SBC, INDIRECT_Y, 2, 5}},
+
     // STA
     {0x85, {0x85, STA, ZERO_PAGE, 2, 3}},
     {0x95, {0x95, STA, ZERO_PAGE_X, 2, 4}},
@@ -167,6 +223,12 @@ std::unordered_map<b1, opCode> codeMap =
     {0x84, {0x84, STY, ZERO_PAGE, 2, 3}},
     {0x94, {0x94, STY, ZERO_PAGE_X, 2, 4}},
     {0x8C, {0x8C, STY, ABSOLUTE, 3, 4}},
+
+    // RTI
+    {0x40, {0x40, RTI, IMPLIED, 1, 6}},
+
+    // RTS
+    {0x60, {0x60, RTS, IMPLIED, 1, 6}},
 
     // TAX
     {0xAA, {0xAA, TAX, IMPLIED, 1, 2}},
@@ -264,12 +326,34 @@ std::string instrStr(const instruction instr)
             return "LDX";
         case LDY:
             return "LDY";
+        case LSR:
+            return "LSR";
+        case ORA:
+            return "ORA";
+        case PHA:
+            return "PHA";
+        case PHP:
+            return "PHP";
+        case PLA:
+            return "PLA";
+        case PLP:
+            return "PLP";
+        case ROL:
+            return "ROL";
+        case ROR:
+            return "ROR";
+        case RTI:
+            return "RTI";
+        case RTS:
+            return "RTS";
         case STA:
             return "STA";
         case STX:
             return "STX";
         case STY:
             return "STY";
+        case SBC:
+            return "SBC";
         case TAX:
             return "TAX";
         case TAY:

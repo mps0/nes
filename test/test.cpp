@@ -586,4 +586,98 @@ TEST_CASE("OPCodes")
 
         CHECK(cpu.getY() == 0xB7);
     }
+
+    SUBCASE("LSR")
+    {
+        std::vector<b1> program = {0x4A};
+
+        cpu.setA(0xF1); //1111 0001
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getA() == 0x78); // 0111 1000
+        CHECK(cpu.isStatusBitSet(CPU::CARRY_FLAG));
+    }
+
+    SUBCASE("ORA")
+    {
+        std::vector<b1> program = {0x09, 0xED};
+
+        cpu.setA(0xF0);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getA() == 0xFD);
+    }
+
+    SUBCASE("PHA")
+    {
+        std::vector<b1> program = {0x48};
+
+        cpu.setA(0xF0);
+        mem.load(program);
+        cpu.run(1);
+
+        b1 stackVal = mem.read1(Memory::STACK_START + cpu.getSP() - 1);
+        CHECK(stackVal == cpu.getA());
+    }
+
+    SUBCASE("PHP")
+    {
+        std::vector<b1> program = {0x08};
+
+        cpu.setStatus(0xF0);
+        mem.load(program);
+        cpu.run(1);
+
+        b1 stackVal = mem.read1(Memory::STACK_START + cpu.getSP() - 1);
+        CHECK(stackVal == cpu.getStatus());
+    }
+
+    SUBCASE("PLA")
+    {
+        std::vector<b1> program = {0x68};
+
+        cpu.setSP(0x01);
+        mem.write1(Memory::STACK_START + cpu.getSP() - 1, 0xAA);
+
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.getA() == 0xAA);
+    }
+
+    SUBCASE("PLP")
+    {
+        std::vector<b1> program = {0x28};
+
+        cpu.setSP(0x0F);
+        mem.write1(Memory::STACK_START + 0x0F - 1, CPU::ZERO_FLAG);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(cpu.isStatusBitSet(CPU::ZERO_FLAG));
+    }
+
+    SUBCASE("ROL")
+    {
+        std::vector<b1> program = {0x26, 0x01};
+
+        mem.write1(0x01, 0x0F);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(mem.read1(0x01) == (0x0F << 1));
+    }
+
+    SUBCASE("ROR")
+    {
+        std::vector<b1> program = {0x66, 0x01};
+
+        mem.write1(0x01, 0x10);
+        mem.load(program);
+        cpu.run(1);
+
+        CHECK(mem.read1(0x01) == (0x10 >> 1));
+    }
 }
